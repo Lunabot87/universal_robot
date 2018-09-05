@@ -1,14 +1,48 @@
 <launch>
+    <arg name="sim" default="false" />
+    <arg name="real" default="false" />
+    <arg name="limited" default="true"/>
+    <arg name="debug" default="false" />
+
+    <rosparam command="load" file="$(find ur3_moveit_config)/config/joint_names.yaml"/>
+
+    <remap if="$(arg sim)" from="/follow_joint_trajectory" to="/arm_controller/follow_joint_trajectory"/>
+	
+    <remap if="$(arg real)" from="/follow_joint_trajectory" to="/vel_based_pos_traj_controller/follow_joint_trajectory"/>
+    
+    <include file="$(find ur3_moveit_config)/launch/planning_context.launch">
+        <arg name="load_robot_description" value="true"/>
+    </include>
+    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <param name="/use_gui" value="falue"/>
+        <rosparam param="/source_list">[/joint_states]</rosparam>
+    </node>
+
+    <include file="$(find ur3_moveit_config)/launch/move_group.launch">
+        <arg name="publish_monitored_planning_scene" value="true"/>
+        <arg name="limited" default="$(arg limited)"/>
+        <arg name="debug" default="$(arg debug)" />
+    </include>
+
+    <include file="$(find ur3_moveit_config)/launch/moveit_rviz.launch">
+        <arg name="config" value="true"/>
+    </include>
+
+</launch>
+
+
+<!--launch>
   <arg name="sim" default="false" />
   <arg name="limited" default="false"/>
   <arg name="debug" default="false" />
     
-  <!-- Remap follow_joint_trajectory -->
+  <Remap follow_joint_trajectory>
   <remap if="$(arg sim)" from="/follow_joint_trajectory" to="/arm_controller/follow_joint_trajectory"/>
   
-  <!-- Launch moveit -->
+  < Launch moveit>
   <include file="$(find ur3_moveit_config)/launch/move_group.launch">
     <arg name="limited" default="$(arg limited)"/>
     <arg name="debug" default="$(arg debug)" />
   </include>
-</launch>
+</launch-->
