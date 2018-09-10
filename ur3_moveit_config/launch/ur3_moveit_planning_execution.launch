@@ -25,9 +25,9 @@
         <arg name="debug" default="$(arg debug)" />
     </include>
 
-    <include file="$(find ur3_moveit_config)/launch/moveit_rviz.launch">
+    <!--include file="$(find ur3_moveit_config)/launch/moveit_rviz.launch">
         <arg name="config" value="true"/>
-    </include>
+    </include-->
 
 </launch>
 
